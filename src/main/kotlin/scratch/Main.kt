@@ -15,6 +15,7 @@ interface VectorSpace<S : Scalar<S>, V : Vector<S, V>> {
 interface MatrixSpace<S : Scalar<S>, V : Vector<S, V>> {
     val vectorSpace: VectorSpace<S, V>
     fun fromRows(rows: List<List<S>>)
+    fun fromRows(vararg rows: List<S>)
     fun fromVectors(vectors: List<V>)
     fun fromVectors(vararg vectors: V)
 }
@@ -39,6 +40,7 @@ class MyVectorSpace<S : Scalar<S>> : VectorSpace<S, MyVector<S>> {
 
 class MyMatrixSpace<S : Scalar<S>>(override val vectorSpace: MyVectorSpace<S>) : MatrixSpace<S, MyVector<S>> {
     override fun fromRows(rows: List<List<S>>) {}
+    override fun fromRows(vararg rows: List<S>) {}
     override fun fromVectors(vararg vectors: MyVector<S>) {}
     override fun fromVectors(vectors: List<MyVector<S>>) {}
 }
@@ -79,6 +81,21 @@ fun <S : Scalar<S>, V : Vector<S, V>> test3(a: S, toVector: (x: S) -> V) {
 }
 
 fun <S : Scalar<S>, V : Vector<S, V>> test4(matrixSpace: MatrixSpace<S, V>, a: S) {
+    // no error
+    matrixSpace.fromRows(
+        listOf(a, a),
+        listOf(a, a)
+    )
+}
+
+fun <S : Scalar<S>, V : Vector<S, V>> test5(matrixSpace: MatrixSpace<S, V>, a: S) {
+    // no error
+    val vectorSpace = matrixSpace.vectorSpace
+    val v = vectorSpace.fromScalar(a)
+    matrixSpace.fromVectors(listOf(v))
+}
+
+fun <S : Scalar<S>, V : Vector<S, V>> testFail(matrixSpace: MatrixSpace<S, V>, a: S) {
     // error
     val vectorSpace = matrixSpace.vectorSpace
     val v = vectorSpace.fromScalar(a)
@@ -87,15 +104,18 @@ fun <S : Scalar<S>, V : Vector<S, V>> test4(matrixSpace: MatrixSpace<S, V>, a: S
 }
 
 fun main() {
-    println("----- running test1, test2, test3")
+    println("----- running test1, test2, test3, test4, test5")
     test1()
     val zero = WrappedInt(0)
     val v = MyVector(zero)
     test2(zero, v)
     test3(zero, ::MyVector)
 
-    println("----- running test4 (will throw ClassCastException)")
     val vectorSpace = MyVectorSpace<WrappedInt>()
     val matrixSpace = MyMatrixSpace<WrappedInt>(vectorSpace)
     test4(matrixSpace, zero)
+    test5(matrixSpace, zero)
+
+    println("----- running testFail (will throw ClassCastException)")
+    testFail(matrixSpace, zero)
 }
