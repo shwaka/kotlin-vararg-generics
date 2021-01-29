@@ -10,10 +10,6 @@ class MyCallback<T> : Callback<T> {
     override fun stuffDone(vararg params: T) {
         println("[vararg] params: $params")
     }
-
-    // fun stuffDone(params: List<T>) {
-    //     println("[list] params: $params")
-    // }
 }
 
 class Task<T> {
@@ -30,23 +26,44 @@ inline fun <reified T> doStuffInline(param: T, callback: Callback<T>) {
     callback.stuffDone(param)
 }
 
+fun test0() {
+    // no error
+    val callback: Callback<String> = MyCallback<String>()
+    val param = "hoge"
+    doStuff(param, callback)
+    println("test0 finished")
+}
+
 fun test1() {
+    // no error
+    val callback: Callback<String> = Callback<String> { println("params: $it") }
+    val param = "hoge"
+    doStuffInline(param, callback)
+    println("test1 finished")
+}
+
+fun test2() {
+    // error
+    val callback: Callback<String> = Callback<String> { println("params: $it") }
+    val param = "hoge"
+    doStuff(param, callback) // error
+    println("test2 finished")
+}
+
+fun test3() {
+    // error
     val task = Task<String>()
     val callback: Callback<String> = Callback<String> { println("params: $it") }
     val param = "hoge"
     task.doStuff(param, callback) // error
-    // doStuff(param, callback) // error
-    // doStuffInline(param, callback)
-}
-
-fun test2() {
-    val task = Task<String>()
-    val callback: Callback<String> = MyCallback<String>()
-    val param = "hoge"
-    doStuff(param, callback)
+    println("test3 finished")
 }
 
 fun callbackTest() {
+    println("----- running test0, test1")
+    test0()
     test1()
-    // test2()
+    println("----- running failing test test (will throw ClassCastException)")
+    test2() // error
+    // test3() // error
 }
