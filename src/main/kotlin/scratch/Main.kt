@@ -64,6 +64,7 @@ fun test1() {
     )
     val v = MyVector(zero)
     hoge.fromVectors(v, v, v)
+    println("test1 finished")
 }
 
 @Suppress("UNUSED_PARAMETER")
@@ -71,6 +72,7 @@ fun <S : Scalar<S>, V : Vector<S, V>> test2(a: S, v: V) {
     // no error
     val hoge = Hoge<S, V>()
     hoge.fromVectors(v, v, v)
+    println("test2 finished")
 }
 
 fun <S : Scalar<S>, V : Vector<S, V>> test3(a: S, toVector: (x: S) -> V) {
@@ -78,6 +80,7 @@ fun <S : Scalar<S>, V : Vector<S, V>> test3(a: S, toVector: (x: S) -> V) {
     val hoge = Hoge<S, V>()
     val v = toVector(a)
     hoge.fromVectors(v, v, v)
+    println("test3 finished")
 }
 
 fun <S : Scalar<S>, V : Vector<S, V>> test4(matrixSpace: MatrixSpace<S, V>, a: S) {
@@ -86,6 +89,7 @@ fun <S : Scalar<S>, V : Vector<S, V>> test4(matrixSpace: MatrixSpace<S, V>, a: S
         listOf(a, a),
         listOf(a, a)
     )
+    println("test4 finished")
 }
 
 fun <S : Scalar<S>, V : Vector<S, V>> test5(matrixSpace: MatrixSpace<S, V>, a: S) {
@@ -93,14 +97,16 @@ fun <S : Scalar<S>, V : Vector<S, V>> test5(matrixSpace: MatrixSpace<S, V>, a: S
     val vectorSpace = matrixSpace.vectorSpace
     val v = vectorSpace.fromScalar(a)
     matrixSpace.fromVectors(listOf(v))
+    println("test5 finished")
 }
 
 inline fun <S : Scalar<S>, reified V : Vector<S, V>> test6(matrixSpace: MatrixSpace<S, V>, a: S) {
-    // error
+    // no error
     val vectorSpace = matrixSpace.vectorSpace
     val v = vectorSpace.fromScalar(a)
     // matrixSpace.fromVectors(listOf(v))
     matrixSpace.fromVectors(v)
+    println("test6 finished")
 }
 
 fun <S : Scalar<S>, V : Vector<S, V>> testFail(matrixSpace: MatrixSpace<S, V>, a: S) {
@@ -109,6 +115,7 @@ fun <S : Scalar<S>, V : Vector<S, V>> testFail(matrixSpace: MatrixSpace<S, V>, a
     val v = vectorSpace.fromScalar(a)
     // matrixSpace.fromVectors(listOf(v))
     matrixSpace.fromVectors(v)
+    println("testFail finished")
 }
 
 fun main() {
