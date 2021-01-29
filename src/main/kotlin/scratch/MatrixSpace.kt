@@ -118,7 +118,7 @@ fun <S : Scalar<S>, V : Vector<S, V>> testFail(matrixSpace: MatrixSpace<S, V>, a
     println("testFail finished")
 }
 
-fun main() {
+fun matrixSpaceTest() {
     println("----- running test1, test2, test3, test4, test5, test6")
     test1()
     val zero = WrappedInt(0)
