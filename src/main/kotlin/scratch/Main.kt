@@ -1,4 +1,4 @@
-package scratch.varargWithGenerics
+package scratch
 
 interface Scalar<S : Scalar<S>> {
     operator fun plus(other: S): S
@@ -66,29 +66,35 @@ fun test1() {
 
 @Suppress("UNUSED_PARAMETER")
 fun <S : Scalar<S>, V : Vector<S, V>> test2(a: S, v: V) {
+    // no error
     val hoge = Hoge<S, V>()
     hoge.fromVectors(v, v, v)
 }
 
 fun <S : Scalar<S>, V : Vector<S, V>> test3(a: S, toVector: (x: S) -> V) {
+    // no error
     val hoge = Hoge<S, V>()
     val v = toVector(a)
     hoge.fromVectors(v, v, v)
 }
 
 fun <S : Scalar<S>, V : Vector<S, V>> test4(matrixSpace: MatrixSpace<S, V>, a: S) {
+    // error
     val vectorSpace = matrixSpace.vectorSpace
     val v = vectorSpace.fromScalar(a)
     // matrixSpace.fromVectors(listOf(v))
     matrixSpace.fromVectors(v)
 }
 
-fun varargWithGenerics() {
+fun main() {
+    println("----- running test1, test2, test3")
+    test1()
     val zero = WrappedInt(0)
     val v = MyVector(zero)
     test2(zero, v)
     test3(zero, ::MyVector)
 
+    println("----- running test4 (will throw ClassCastException)")
     val vectorSpace = MyVectorSpace<WrappedInt>()
     val matrixSpace = MyMatrixSpace<WrappedInt>(vectorSpace)
     test4(matrixSpace, zero)
