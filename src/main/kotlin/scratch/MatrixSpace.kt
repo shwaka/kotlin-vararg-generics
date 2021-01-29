@@ -1,4 +1,4 @@
-package scratch
+package scratch.matrixSpace
 
 interface Scalar<S : Scalar<S>> {
     operator fun plus(other: S): S
