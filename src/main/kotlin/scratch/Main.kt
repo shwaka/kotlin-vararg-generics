@@ -95,6 +95,14 @@ fun <S : Scalar<S>, V : Vector<S, V>> test5(matrixSpace: MatrixSpace<S, V>, a: S
     matrixSpace.fromVectors(listOf(v))
 }
 
+inline fun <S : Scalar<S>, reified V : Vector<S, V>> test6(matrixSpace: MatrixSpace<S, V>, a: S) {
+    // error
+    val vectorSpace = matrixSpace.vectorSpace
+    val v = vectorSpace.fromScalar(a)
+    // matrixSpace.fromVectors(listOf(v))
+    matrixSpace.fromVectors(v)
+}
+
 fun <S : Scalar<S>, V : Vector<S, V>> testFail(matrixSpace: MatrixSpace<S, V>, a: S) {
     // error
     val vectorSpace = matrixSpace.vectorSpace
@@ -104,7 +112,7 @@ fun <S : Scalar<S>, V : Vector<S, V>> testFail(matrixSpace: MatrixSpace<S, V>, a
 }
 
 fun main() {
-    println("----- running test1, test2, test3, test4, test5")
+    println("----- running test1, test2, test3, test4, test5, test6")
     test1()
     val zero = WrappedInt(0)
     val v = MyVector(zero)
@@ -115,6 +123,7 @@ fun main() {
     val matrixSpace = MyMatrixSpace<WrappedInt>(vectorSpace)
     test4(matrixSpace, zero)
     test5(matrixSpace, zero)
+    test6(matrixSpace, zero)
 
     println("----- running testFail (will throw ClassCastException)")
     testFail(matrixSpace, zero)
